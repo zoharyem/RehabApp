@@ -1,5 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
+import Routine from "../Components/routine";
 
 /** ==================== Sample Data =======================*/
 const name = "Zohar";
@@ -25,10 +26,15 @@ export default function Index() {
       colors={["#1e3a8a", "#3b82f6", "#60a5fa"]}
       style={styles.gradient}
     >
-      <View style={styles.view}>
-        <Text style={styles.title}>Welcome back, {name}</Text>
-        <Text style={styles.text}>Here's whats on for today.</Text>
-      </View>
+      <ScrollView>
+        <View style={styles.view}>
+          <Text style={styles.title}>Welcome back, {name}</Text>
+          <Text style={styles.text}>Here's whats on for today.</Text>
+        </View>
+        {routines.map((routine) => (
+          <Routine key={routine.name} {...routine} />
+        ))}
+      </ScrollView>
     </LinearGradient>
   );
 }
@@ -52,7 +58,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   view: {
-    flex: 1,
     alignItems: "center",
+    marginBottom: 20,
   },
 });
