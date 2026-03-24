@@ -1,5 +1,13 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User #Inbuild django user
+
+
+class Exercise(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.name
 
 class Plan(models.Model):
     title = models.CharField(max_length=100)
@@ -26,25 +34,25 @@ class Routine(models.Model):
         on_delete=models.CASCADE,
         related_name='routines'
     )
+    exercises = models.ManyToManyField(
+        Exercise,
+        related_name='routines',
+        blank=True
+    )
 
     def __str__(self):
         return self.title
-
-class Exercise(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField(blank=True)
-    routine = models.ForeignKey(
-        Routine, 
-        on_delete=models.CASCADE,
-        related_name='exercises'
-    )
+    
+class ExerciseDetails(models.Model):
     sets = models.PositiveIntegerField(null=True, blank=True)
     reps = models.PositiveIntegerField(null=True, blank=True)
     duration_seconds = models.PositiveIntegerField(null=True, blank=True)
     weight_kgs = models.DecimalField(null=True, blank=True)
-
-    def __str__(self):
-        return self.name
+    exercise = models.ForeignKey(
+        Exercise,
+        on_delete=models.CASCADE,
+        related_name='exercise_details'
+    )
 
 class Log(models.Model):
     user = models.ForeignKey(
