@@ -3,7 +3,7 @@ from django.contrib.auth.models import User #Inbuild django user
 
 
 class Exercise(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True)
 
     def __str__(self):
@@ -22,6 +22,10 @@ class Plan(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+        constraints = [models.UniqueConstraint(
+            fields=['title', 'user'],
+            name='unique_plan_title_per_user'
+        )]
 
     def __str__(self):
         return f"{self.title} - {self.user.username}"
@@ -39,6 +43,12 @@ class Routine(models.Model):
         related_name='routines',
         blank=True
     )
+    class Meta:
+        ordering = ['-created_at']
+        constraints = [models.UniqueConstraint(
+            fields=['title', 'plan'],
+            name='unique_routine_title_per_user'
+        )]
 
     def __str__(self):
         return self.title
