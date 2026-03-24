@@ -1,22 +1,21 @@
 from django.core.management.base import BaseCommand, CommandError
 from api.models import *
 from django.contrib.auth.models import User
+import random
 
 class Command(BaseCommand):
     help = "Generates dummy data for testing"
-    print("Generating dummy data for testing...")
 
-    def clear_data():
-        User.objects.all().delete()
+    SEED = 2
+    random.seed(SEED)
 
-    def create_users():
+    def handle(self, *args, **options):
+        self.stdout.write("Generating dummy data for testing...")
+
+    def create_users(self, seed=SEED):
         users = []
 
-        user_data = [
-            ("test_user_1", "1"),
-            ("test_user_2", "2"),
-            ("test_user_3", "3")
-        ]
+        user_data = [(f"test_user_{i}", str(i)) for i in range(seed)]
 
         for username, password in user_data:
             user, created = User.objects.get_or_create(username = username)
@@ -26,7 +25,7 @@ class Command(BaseCommand):
             users.append(user)
         return users
 
-    def create_exercises():
+    def create_exercises(self, seed=SEED):
         exercises = []
 
         exercise_data = [
@@ -47,6 +46,39 @@ class Command(BaseCommand):
             exercises.append(exercise)
 
         return exercises
+
+    def generate_data(self, users: list[User], exercises: list[Exercise], seed=SEED):
+
+        # Define the plans
+        plans: list[Plan] = []
+
+        for user in users:  # can be better extended with seed
+            planA = Plan.objects.create(
+                title=f"{user} Plan A",
+                description=f"{user}'s first plan.",
+                user=user)
+            plans.append(planA)
+            planB = Plan.objects.create(
+                title=f"{user} Plan B",
+                description=f"{user}'s second plan.",
+                user=user)
+            plans.append(planB)
+
+        # define the routines
+        routines = []
+
+        for plan in plans:
+            routineA = Routine.objects.create(
+                title=f"{plan.title} Routine A",
+                description=f"{plan.title} Routine A: to be completed... other instructions...",
+                plan=plan)
+            routines.append(routineA)
+            routineB = Routine.objects.create(
+                title=f"{plan.title} Routine B",
+                description=f"{plan.title} Routine B: to be completed... other instructions...",
+                plan=plan)
+            routines.append(routineB)
+
 
 
     

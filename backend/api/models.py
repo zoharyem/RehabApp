@@ -38,11 +38,7 @@ class Routine(models.Model):
         on_delete=models.CASCADE,
         related_name='routines'
     )
-    exercises = models.ManyToManyField(
-        Exercise,
-        related_name='routines',
-        blank=True
-    )
+
     class Meta:
         ordering = ['-created_at']
         constraints = [models.UniqueConstraint(
@@ -53,15 +49,20 @@ class Routine(models.Model):
     def __str__(self):
         return self.title
     
-class ExerciseDetails(models.Model):
+class PrescribedExercise(models.Model):
     sets = models.PositiveIntegerField(null=True, blank=True)
     reps = models.PositiveIntegerField(null=True, blank=True)
     duration_seconds = models.PositiveIntegerField(null=True, blank=True)
-    weight_kgs = models.DecimalField(null=True, blank=True)
+    weight_kgs = models.DecimalField(null=True, blank=True, decimal_places=2, max_digits=6)
+    routine = models.ForeignKey(
+        Routine,
+        on_delete=models.CASCADE,
+        related_name="prescribed_exercises"
+    )
     exercise = models.ForeignKey(
         Exercise,
         on_delete=models.CASCADE,
-        related_name='exercise_details'
+        related_name='prescribed_exercise_details'
     )
 
 class Log(models.Model):
