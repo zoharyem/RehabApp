@@ -1,6 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User #Inbuild django user
-
+from django.contrib.auth.models import User # Inbuild django user
 
 class Exercise(models.Model):
     name = models.CharField(max_length=100, unique=True)
